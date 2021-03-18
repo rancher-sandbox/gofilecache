@@ -1,4 +1,4 @@
-module github.com/dragonchaser/gofilecache
+module github.com/rancher-sandbox/gofilecache
 
 go 1.16
 

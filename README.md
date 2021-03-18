@@ -11,7 +11,7 @@ import (
   "crypto/sha256"
   "io/ioutil"
   "os"
-  "github.com/dragonchaser/gofilecache/pkg/gofilecache"
+  "github.com/rancher-sandbox/gofilecache"
 )
 
 func main() {

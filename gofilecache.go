@@ -11,7 +11,7 @@ import (
 )
 
 const cacheREADME = `This directory holds a cache directory tree.
-This has been created using github.com/dragonchaser/gofilecache/
+This has been created using github.com/rancher-sandbox/gofilecache/
 `
 
 func InitCache(cacheDir string) *Cache {
