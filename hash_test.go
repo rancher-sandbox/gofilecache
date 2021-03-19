@@ -1,4 +1,4 @@
-// Copyright 2017 The Go Authors. All rights reserved.
+// Copyright 2017 The Go Authors, SUSE LLC. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
@@ -6,6 +6,7 @@ package gofilecache
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	"testing"
 )
@@ -27,7 +28,7 @@ func TestHash(t *testing.T) {
 }
 
 func TestHashFile(t *testing.T) {
-	f, err := os.CreateTemp("", "cmd-go-test-")
+	f, err := ioutil.TempFile("", "cmd-go-test-")
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -1,4 +1,4 @@
-// Copyright 2017 The Go Authors. All rights reserved.
+// Copyright 2017 The Go Authors, SUSE LLC. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
@@ -12,7 +12,8 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/fs"
+	"io/ioutil"
+
 	"os"
 	"path/filepath"
 	"strconv"
@@ -54,7 +55,7 @@ func Open(dir string) (*Cache, error) {
 		return nil, err
 	}
 	if !info.IsDir() {
-		return nil, &fs.PathError{Op: "open", Path: dir, Err: fmt.Errorf("not a directory")}
+		return nil, err
 	}
 	for i := 0; i < 256; i++ {
 		name := filepath.Join(dir, fmt.Sprintf("%02x", i))
@@ -238,7 +239,7 @@ func (c *Cache) GetBytes(id ActionID) ([]byte, Entry, error) {
 	if err != nil {
 		return nil, entry, err
 	}
-	data, _ := os.ReadFile(c.OutputFile(entry.OutputID))
+	data, _ := ioutil.ReadFile(c.OutputFile(entry.OutputID))
 	if sha256.Sum256(data) != entry.OutputID {
 		return nil, entry, &entryNotFoundError{Err: errors.New("bad checksum")}
 	}

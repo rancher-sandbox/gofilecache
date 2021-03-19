@@ -5,6 +5,7 @@
 package gofilecache
 
 import (
+	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -20,7 +21,7 @@ func InitCache(cacheDir string) *Cache {
 	}
 	if _, err := os.Stat(filepath.Join(cacheDir, "README")); err != nil {
 		// Best effort.
-		os.WriteFile(filepath.Join(cacheDir, "README"), []byte(cacheREADME), 0666)
+		ioutil.WriteFile(filepath.Join(cacheDir, "README"), []byte(cacheREADME), 0666)
 	}
 
 	c, err := Open(cacheDir)
