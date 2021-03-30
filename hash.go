@@ -6,7 +6,7 @@ package gofilecache
 
 import (
 	"bytes"
-	"crypto/sha256"
+	"crypto/sha512"
 	"fmt"
 	"hash"
 	"io"
@@ -18,10 +18,10 @@ import (
 var debugHash = false // set when GODEBUG=gocachehash=1
 
 // HashSize is the number of bytes in a hash.
-const HashSize = 32
+const HashSize = 64
 
 // A Hash provides access to the canonical hash function used to index the cache.
-// The current implementation uses salted SHA256, but clients must not assume this.
+// The current implementation uses salted SHA512, but clients must not assume this.
 type Hash struct {
 	h    hash.Hash
 	name string        // for debugging
@@ -35,13 +35,13 @@ type Hash struct {
 // entries, so that a bug in one version does not affect the execution
 // of other versions. This salt will result in additional ActionID files
 // in the cache, but not additional copies of the large output files,
-// which are still addressed by unsalted SHA256.
+// which are still addressed by unsalted SHA512.
 var hashSalt = []byte(runtime.Version())
 
 // Subkey returns an action ID corresponding to mixing a parent
 // action ID with a string description of the subkey.
 func Subkey(parent ActionID, desc string) ActionID {
-	h := sha256.New()
+	h := sha512.New()
 	h.Write([]byte("subkey:"))
 	h.Write(parent[:])
 	h.Write([]byte(desc))
@@ -61,7 +61,7 @@ func Subkey(parent ActionID, desc string) ActionID {
 // NewHash returns a new Hash.
 // The caller is expected to Write data to it and then call Sum.
 func NewHash(name string) *Hash {
-	h := &Hash{h: sha256.New(), name: name}
+	h := &Hash{h: sha512.New(), name: name}
 	if debugHash {
 		fmt.Fprintf(os.Stderr, "HASH[%s]\n", h.name)
 	}
@@ -138,7 +138,7 @@ func FileHash(file string) ([HashSize]byte, error) {
 		return out, nil
 	}
 
-	h := sha256.New()
+	h := sha512.New()
 	f, err := os.Open(file)
 	if err != nil {
 		if debugHash {

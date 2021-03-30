@@ -7,7 +7,7 @@ package gofilecache
 
 import (
 	"bytes"
-	"crypto/sha256"
+	"crypto/sha512"
 	"encoding/hex"
 	"errors"
 	"fmt"
@@ -240,7 +240,7 @@ func (c *Cache) GetBytes(id ActionID) ([]byte, Entry, error) {
 		return nil, entry, err
 	}
 	data, _ := ioutil.ReadFile(c.OutputFile(entry.OutputID))
-	if sha256.Sum256(data) != entry.OutputID {
+	if sha512.Sum512(data) != entry.OutputID {
 		return nil, entry, &entryNotFoundError{Err: errors.New("bad checksum")}
 	}
 	return data, entry, nil
@@ -425,7 +425,7 @@ func (c *Cache) PutNoVerify(id ActionID, file io.ReadSeeker) (OutputID, int64, e
 
 func (c *Cache) put(id ActionID, file io.ReadSeeker, allowVerify bool) (OutputID, int64, error) {
 	// Compute output ID.
-	h := sha256.New()
+	h := sha512.New()
 	if _, err := file.Seek(0, 0); err != nil {
 		return OutputID{}, 0, err
 	}
@@ -459,7 +459,7 @@ func (c *Cache) copyFile(file io.ReadSeeker, out OutputID, size int64) error {
 	if err == nil && info.Size() == size {
 		// Check hash.
 		if f, err := os.Open(name); err == nil {
-			h := sha256.New()
+			h := sha512.New()
 			io.Copy(h, f)
 			f.Close()
 			var out2 OutputID
@@ -497,7 +497,7 @@ func (c *Cache) copyFile(file io.ReadSeeker, out OutputID, size int64) error {
 		f.Truncate(0)
 		return err
 	}
-	h := sha256.New()
+	h := sha512.New()
 	w := io.MultiWriter(f, h)
 	if _, err := io.CopyN(w, file, size-1); err != nil {
 		f.Truncate(0)

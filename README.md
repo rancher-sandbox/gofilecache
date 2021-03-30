@@ -8,7 +8,7 @@ This is a simple filecache derived from golangs buildcache.
 package main
 
 import (
-  "crypto/sha256"
+  "crypto/sha512"
   "io/ioutil"
   "os"
   "github.com/rancher-sandbox/gofilecache"
@@ -23,7 +23,7 @@ func main() {
   defer file.Close()
   // generate a hash under which the entry can be found in the cache
   // for simplicity we use the filename here
-  actionID := sha256.Sum256([]byte("os-release"))
+  actionID := sha512.Sum512([]byte("os-release"))
 
   // store the files contents to the cache
   cache.Put(actionID, file)
