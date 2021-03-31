@@ -231,6 +231,16 @@ func (c *Cache) GetFile(id ActionID) (file string, entry Entry, err error) {
 	return file, entry, nil
 }
 
+func (c *Cache) GetMultipleFiles(id ActionID) (file []string, entry Entry, err error) {
+	/* TODO: implement me,
+	this will be problematic, since this thing is designed to return just the filenames
+	to be opened with os.{Open,Read...} come up with a way to either store each file with a
+	seperate name in the directory structure or to split them here to single file io.Readers
+	*/
+	// TODO: I don't have tests!
+	return nil, Entry{}, nil
+}
+
 // GetBytes looks up the action ID in the cache and returns
 // the corresponding output bytes.
 // GetBytes should only be used for data that can be expected to fit in memory.
@@ -415,6 +425,11 @@ func (c *Cache) Put(id ActionID, file io.ReadSeeker) (OutputID, int64, error) {
 	return c.put(id, file, true)
 }
 
+func (c *Cache) PutMultipleFiles(id ActionID, files []io.ReadSeeker) (OutputID, int64, error) {
+	// TODO: I don't have tests!
+	return c.putMultiple(id, files, true)
+}
+
 // PutNoVerify is like Put but disables the verify check
 // when GODEBUG=goverifycache=1 is set.
 // It is meant for data that is OK to cache but that we expect to vary slightly from run to run,
@@ -443,6 +458,12 @@ func (c *Cache) put(id ActionID, file io.ReadSeeker, allowVerify bool) (OutputID
 
 	// Add to cache index.
 	return out, size, c.putIndexEntry(id, out, size, allowVerify)
+}
+
+func (c *Cache) putMultiple(id ActionID, files []io.ReadSeeker, allowVerify bool) (OutputID, int64, error) {
+	// TODO: implement me from the put function above, and modify the putfunction to call putMultiple with a file array with a single entry
+	// TODO: I don't have tests!
+	return sha512.Sum512([]byte("null")), 0, nil
 }
 
 // PutBytes stores the given bytes in the cache as the output for the action ID.
